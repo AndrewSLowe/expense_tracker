@@ -1,0 +1,7 @@
+eggs  12  2pm  mks;ang
+eggs  12  2pm  mks;ang
+milk  5  3pm  dairy
+cheese  1  4pm  groceries
+eggs  12  2pm  mks;ang
+milk  5  3pm  dairy
+cheese  1  4pm  groceries
