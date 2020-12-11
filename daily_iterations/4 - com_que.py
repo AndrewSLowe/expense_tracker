@@ -64,7 +64,6 @@ class ExpenseRepository:
         self.table_name = db_file[:-3]
         self.conn = create_connection(db_file)
 
-    @classmethod
     def AddExpense(self, expenses):
         """
         Saves all listed expenses in the DB
