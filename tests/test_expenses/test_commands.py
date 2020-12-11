@@ -4,26 +4,28 @@ from expenses.models import Expense
 from expenses.commands import CreateArticleCommand, AlreadyExists
 
 
-def test_create_article():
+def test_create_expense():
     """
-    GIVEN CreateArticleCommand with a valid properties author, title and content
+    GIVEN CreateExpenseCommand with a valid properties title, amount, created_at and content
     WHEN the execute method is called
     THEN a new Article must exist in the database with the same attributes
     """
-    cmd = CreateArticleCommand(
+    cmd = CreateExpenseCommand(
         author='john@doe.com',
         title='New Article',
         content='Super awesome article'
     )
 
-    article = cmd.execute()
+    expense = cmd.execute()
 
-    db_article = Article.get_by_id(article.id)
+    db_article = Expense.get_by_id(expense.id)
 
-    assert db_article.id == article.id
-    assert db_article.author == article.author
-    assert db_article.title == article.title
-    assert db_article.content == article.content
+    assert db_article.id == expense.id
+    assert db_article.title == expense.title
+    assert db_article.amount == expense.amount
+    assert db_article.created_at == expense.created_at
+    assert db_article.tags == expense.tags
+
 
 
 def test_create_article_already_exists():

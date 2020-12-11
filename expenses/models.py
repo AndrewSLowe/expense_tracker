@@ -52,8 +52,24 @@ class Expense(BaseModel):
 
         return expenses
 
-    def EditExpense(self) -> 'Expense':
-        pass
+    def EditExpense(self, id) -> 'Expense':
+        with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
+            sql =  ''' 
+                    UPDATE expenses 
+                        SET title=?, 
+                        amount=?, 
+                        created_at=?, 
+                        tags=?
+                    WHERE id=?
+                '''
+                    
+            values = (self.title, self.amount, self.created_at, self.tags, id)
+
+            cur = conn.cursor()
+            cur.execute(sql, values)
+            conn.commit()
+
+        return self
 
     def AddExpense(self) -> 'Expense':
         """
@@ -79,16 +95,27 @@ class Expense(BaseModel):
         conn.execute(
             """ CREATE TABLE IF NOT EXISTS expenses (
                     id text,
-                    title VARCHAR(64),
-                    amount VARCHAR(64),
-                    created_at VARCHAR,
-                    tags VARCHAR
+                    title TEXT,
+                    amount INT,
+                    created_at TEXT,
+                    tags TEXT
                 ); """
         )
         conn.close()
 
 def main():
     Expense.create_table()
+    e1 = Expense(title='eggs', amount=12, created_at='12/01/20', tags='dairy')
+    e2 = Expense(title='milk', amount=1, created_at='12/01/20', tags='groceries')
+    e3 = Expense(title='cheese', amount=3, created_at='12/01/20', tags='gouda')
+    e4 = Expense(title='yogurt', amount=1, created_at='12/01/20', tags='greek')
 
+    e1.AddExpense()
+    e2.AddExpense()
+    e3.AddExpense()
+    e4.AddExpense()
+    
+    Expense(title='yogurt', amount=1, created_at='12/01/20', tags='greek').EditExpense('e71c5fb5-6be7-49a6-852d-7c3063ecb6a1')
+    print(Expense(title='yogurt', amount=1, created_at='12/01/20', tags='greek').GetByID('e71c5fb5-6be7-49a6-852d-7c3063ecb6a1'))
 if __name__ == "__main__":
-  main()
+    main()

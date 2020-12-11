@@ -9,7 +9,7 @@ class ListExpensesQuery(BaseModel):
 
         return expenses
     
-class ListArticlesQuery(BaseModel):
+class GetByIDQuery(BaseModel):
     def execute(self, id: str):
         expenses = Expense.GetByID(id)
 
@@ -17,6 +17,8 @@ class ListArticlesQuery(BaseModel):
 
 def main():
     print(ListExpensesQuery().execute())
+    print('==================')
+    print(GetByIDQuery().execute('e71c5fb5-6be7-49a6-852d-7c3063ecb6a1'))
 
 if __name__ == "__main__":
     main()
