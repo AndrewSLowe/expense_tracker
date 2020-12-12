@@ -8,7 +8,7 @@ import pytest
 
 from expenses.models import Expense
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(autouse=True)    # autouse flag set to True: automatically used before and after each test
 def database():
     _, file_name = tempfile.mkstemp()
     os.environ['DATABASE_NAME'] = file_name

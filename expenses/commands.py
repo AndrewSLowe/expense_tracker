@@ -23,7 +23,7 @@ class CreateExpenseCommand(BaseModel):
 
         return expense
 
-class CreateEditExpenseCommand(BaseModel):
+class EditExpenseCommand(BaseModel):
     title: str
     amount: str
     created_at: str
@@ -40,7 +40,7 @@ class CreateEditExpenseCommand(BaseModel):
         return expense
 
 def main():
-    id = '057db4af-e7ac-4509-97fb-d1bf7cf01c70'
+    id = 'e875b8ed-0757-4dc4-a770-86050e15b8d4'
     CreateExpenseCommand(title='milk', amount='3', created_at='yesterday', tags='plzwork').execute()
     CreateEditExpenseCommand(title='milk', amount='3', created_at='yesterday', tags='plzwork').execute(id)
 

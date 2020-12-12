@@ -42,15 +42,16 @@ class Expense(BaseModel):
     
         cur = conn.cursor()
         cur.execute("SELECT * FROM expenses WHERE id=?", (id,))
+        
         record = cur.fetchone()
 
         if record is None:
             return NotFound
 
-        expenses = cls(**record)
+        expense = cls(**record)
         conn.close()
 
-        return expenses
+        return expense
 
     def EditExpense(self, id) -> 'Expense':
         with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
