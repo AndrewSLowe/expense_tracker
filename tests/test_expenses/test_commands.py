@@ -1,51 +1,27 @@
 import pytest
 
 from expenses.models import Expense
-from expenses.commands import CreateArticleCommand, AlreadyExists
-
+from expenses.commands import CreateExpenseCommand
 
 def test_create_expense():
     """
     GIVEN CreateExpenseCommand with a valid properties title, amount, created_at and content
     WHEN the execute method is called
-    THEN a new Article must exist in the database with the same attributes
+    THEN a new Expense must exist in the database with the same attributes
     """
     cmd = CreateExpenseCommand(
-        author='john@doe.com',
-        title='New Article',
-        content='Super awesome article'
+        title='some cool title',
+        amount='some cool amount',
+        created_at='Super cool date',
+        tags='some cool tags'
     )
 
     expense = cmd.execute()
 
-    db_article = Expense.get_by_id(expense.id)
+    db_expense = Expense.GetByID(expense.id)
 
-    assert db_article.id == expense.id
-    assert db_article.title == expense.title
-    assert db_article.amount == expense.amount
-    assert db_article.created_at == expense.created_at
-    assert db_article.tags == expense.tags
-
-
-
-def test_create_article_already_exists():
-    """
-    GIVEN CreateArticleCommand with a title of some article in database
-    WHEN the execute method is called
-    THEN the AlreadyExists exception must be raised
-    """
-
-    Article(
-        author='jane@doe.com',
-        title='New Article',
-        content='Super extra awesome article'
-    ).save()
-
-    cmd = CreateArticleCommand(
-        author='john@doe.com',
-        title='New Article',
-        content='Super awesome article'
-    )
-
-    with pytest.raises(AlreadyExists):
-        cmd.execute()
+    assert db_expense.id == expense.id
+    assert db_expense.title == expense.title
+    assert db_expense.amount == expense.amount
+    assert db_expense.created_at == expense.created_at
+    assert db_expense.tags == expense.tags

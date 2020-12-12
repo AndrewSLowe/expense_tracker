@@ -2,8 +2,8 @@ import os
 import sqlite3
 import uuid
 from typing import List
-
-from pydantic import BaseModel, EmailStr, Field
+# pylint: disable=no-name-in-module
+from pydantic import BaseModel, Field
 
 class NotFound(Exception):
     pass
@@ -116,6 +116,5 @@ def main():
     e4.AddExpense()
     
     Expense(title='yogurt', amount=1, created_at='12/01/20', tags='greek').EditExpense('e71c5fb5-6be7-49a6-852d-7c3063ecb6a1')
-    print(Expense(title='yogurt', amount=1, created_at='12/01/20', tags='greek').GetByID('e71c5fb5-6be7-49a6-852d-7c3063ecb6a1'))
 if __name__ == "__main__":
     main()

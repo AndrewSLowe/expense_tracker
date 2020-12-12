@@ -1,6 +1,7 @@
 from typing import List
+# pylint: disable=no-name-in-module
 from pydantic import BaseModel
-from models import Expense, NotFound
+from expenses.models import Expense, NotFound
 
 class ListExpensesQuery(BaseModel):
 

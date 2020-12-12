@@ -1,6 +1,8 @@
-from pydantic import BaseModel, EmailStr
+# pylint: disable=no-name-in-module
 
-from models import Expense, NotFound
+from pydantic import BaseModel
+
+from expenses.models import Expense, NotFound
 
 class AlreadyExists(Exception):
     pass
@@ -38,7 +40,7 @@ class CreateEditExpenseCommand(BaseModel):
         return expense
 
 def main():
-    id = '682e211c-f736-4063-ba42-ec8cf297fcc4'
+    id = '057db4af-e7ac-4509-97fb-d1bf7cf01c70'
     CreateExpenseCommand(title='milk', amount='3', created_at='yesterday', tags='plzwork').execute()
     CreateEditExpenseCommand(title='milk', amount='3', created_at='yesterday', tags='plzwork').execute(id)
 
