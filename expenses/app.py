@@ -3,7 +3,15 @@ from flask import Flask, jsonify, request
 from expenses.commands import CreateExpenseCommand, EditExpenseCommand
 from expenses.queries import ListExpensesQuery, GetExpenseByIDQuery
 
+from pydantic import ValidationError
+
 app = Flask(__name__)
+
+@app.errorhandler(ValidationError)
+def handle_validation_exception(error):
+    response = jsonify(error.errors())
+    response.status_code = 400
+    return response
 
 @app.route('/create-expense/', methods=['POST'])
 def create_expense():

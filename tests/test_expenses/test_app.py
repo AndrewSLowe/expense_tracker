@@ -72,3 +72,53 @@ def test_list_expenses(client):
     )
 
     validate_payload(response.json, 'ExpenseList.json')
+
+@pytest.mark.parametrize(
+    'data',
+    [
+        {
+            'title': 'an item',
+            'amount': 'an amount',
+            'created_at': 'a date',
+        },
+        {
+            'title': 'an item',
+            'amount': 'an amount',
+        },
+        {
+            'title': 'an item',
+            'amount': None,
+            'created_at': 'a date',
+            'tags': 'some tags'
+        },
+        {
+            'title': 'an item',
+            'amount': None,
+            'created_at': 'date',
+            'tags': None
+        },
+        {
+            'title': 'an item',
+            'amount': 'an amount',
+            'created_at': 'date',
+            'tags': None
+        },
+    ]
+)
+
+def test_create_expense_bad_request(client, data):
+    """
+    GIVEN request data with invalid values or missing attributes
+    WHEN enpoint /create-article/ is called
+    THEN it should return status 400 and JSON body
+    """
+    response = client.post(
+        '/create-expense/',
+        data=json.dumps(
+            data
+        ),
+        content_type='application/json'
+    )
+
+    assert response.status_code == 400
+    assert response.json is not None
