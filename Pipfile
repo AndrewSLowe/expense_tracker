@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 pydantic = "*"
 pytest = "*"
+jsonschema = "*"
+flask = "*"
 
 [requires]
 python_version = "3.9"

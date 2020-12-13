@@ -42,4 +42,4 @@ def test_get_expense_by_id():
         id=expense.id
     )
 
-    assert query.execute(id).id == expense.id
+    assert query.execute().id == expense.id

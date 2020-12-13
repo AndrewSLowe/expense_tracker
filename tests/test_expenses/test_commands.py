@@ -17,7 +17,7 @@ def test_create_expense():
 
     expense = cmd.execute()
 
-    db_expense = Expense.GetByID(expense.id)
+    db_expense = Expense.GetExpenseByID(expense.id)
 
     assert db_expense.id == expense.id
     assert db_expense.title == expense.title
@@ -47,7 +47,7 @@ def test_edit_expense():
 
     expense = cmd.execute()
     expense_edit = edit.execute(expense.id)
-    db_expense = Expense.GetByID(expense.id)
+    db_expense = Expense.GetExpenseByID(expense.id)
 
     assert db_expense.id == expense.id
     assert db_expense.title == expense_edit.title

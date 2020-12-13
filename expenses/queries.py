@@ -13,15 +13,15 @@ class ListExpensesQuery(BaseModel):
 class GetExpenseByIDQuery(BaseModel):
     id: str
 
-    def execute(self, id: str) -> Expense:
-        expense = Expense.GetByID(self.id)
+    def execute(self) -> Expense:
+        expense = Expense.GetExpenseByID(self.id)
 
         return expense
 
 def main():
     print(ListExpensesQuery().execute())
     print('==================')
-    print(GetExpenseByIDQuery().execute('e71c5fb5-6be7-49a6-852d-7c3063ecb6a1'))
+    print(GetExpenseByIDQuery('e71c5fb5-6be7-49a6-852d-7c3063ecb6a1').execute())
 
 if __name__ == "__main__":
     main()

@@ -31,7 +31,7 @@ class Expense(BaseModel):
         return expenses
 
     @classmethod
-    def GetByID(cls, id: str):
+    def GetExpenseByID(cls, expense_id: str):
         """
         Query expenses by id (unique int)
         :param id:
@@ -41,7 +41,7 @@ class Expense(BaseModel):
         conn.row_factory = sqlite3.Row
     
         cur = conn.cursor()
-        cur.execute("SELECT * FROM expenses WHERE id=?", (id,))
+        cur.execute("SELECT * FROM expenses WHERE id=?", (expense_id,))
         
         record = cur.fetchone()
 
