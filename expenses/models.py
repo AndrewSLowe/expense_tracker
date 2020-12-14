@@ -42,7 +42,7 @@ class Expense(BaseModel):
     
         cur = conn.cursor()
         cur.execute("SELECT * FROM expenses WHERE id=?", (expense_id,))
-        
+
         record = cur.fetchone()
 
         if record is None:
@@ -53,7 +53,7 @@ class Expense(BaseModel):
 
         return expense
 
-    def EditExpense(self, id) -> 'Expense':
+    def EditExpense(self, id: str) -> 'Expense':
         with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
             sql =  ''' 
                     UPDATE expenses 
@@ -106,7 +106,7 @@ class Expense(BaseModel):
 
 def main():
     Expense.create_table()
-    e1 = Expense(title='eggs', amount=12, created_at='12/01/20', tags='dairy')
+    e1 = Expense(id = 'test_id', title='eggs', amount=12, created_at='12/01/20', tags='dairy')
     e2 = Expense(title='milk', amount=1, created_at='12/01/20', tags='groceries')
     e3 = Expense(title='cheese', amount=3, created_at='12/01/20', tags='gouda')
     e4 = Expense(title='yogurt', amount=1, created_at='12/01/20', tags='greek')

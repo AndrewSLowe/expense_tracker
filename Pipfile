@@ -10,6 +10,7 @@ pydantic = "*"
 pytest = "*"
 jsonschema = "*"
 flask = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.9"

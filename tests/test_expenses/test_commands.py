@@ -37,19 +37,19 @@ def test_edit_expense():
         created_at='Super cool date',
         tags='some cool tags'
     )
-
-    edit = EditExpenseCommand(
-        title='some cool title',
-        amount='some cool amount',
-        created_at='Super cool date',
-        tags='some cool tags'
-    )
-
     expense = cmd.execute()
-    expense_edit = edit.execute(expense.id)
+    edit = EditExpenseCommand(
+        id = expense.id,
+        title='some fdsaf title',
+        amount='some dsaf amount',
+        created_at='Super cofdaol date',
+        tags='some fda tags'
+    )
+    expense_edit = edit.execute()
+
     db_expense = Expense.GetExpenseByID(expense.id)
 
-    assert db_expense.id == expense.id
+    assert db_expense.id == expense_edit.id
     assert db_expense.title == expense_edit.title
     assert db_expense.amount == expense_edit.amount
     assert db_expense.created_at == expense_edit.created_at
