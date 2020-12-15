@@ -11,6 +11,7 @@ pytest = "*"
 jsonschema = "*"
 flask = "*"
 pytest-cov = "*"
+requests = "*"
 
 [requires]
 python_version = "3.9"

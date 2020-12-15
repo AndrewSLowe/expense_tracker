@@ -20,6 +20,13 @@ def create_expense():
     )
     return jsonify(cmd.execute().dict())
 
+@app.route('/edit-expense/', methods=['PUT'])
+def edit_expense():
+    cmd = EditExpenseCommand(
+        **request.json
+    )
+    return jsonify(cmd.execute().dict())
+
 @app.route('/expense/<expense_id>/', methods=['GET'])
 def get_expense(expense_id):
     query = GetExpenseByIDQuery(

@@ -1,5 +1,6 @@
 import json
 import pathlib
+import requests
 
 import pytest
 from jsonschema import validate, RefResolver
@@ -46,6 +47,30 @@ def test_create_expense(client):
 
     response = client.post(
         '/create-expense/',
+        data=json.dumps(
+            data
+        ),
+        content_type='application/json'
+    )
+
+    validate_payload(response.json, 'Expense.json')
+
+def test_edit_expense(client):
+    """
+    GIVEN ID of expense stored in the database
+    WHEN endpoint /create-expense/ is called
+    THEN it should return Expense in json format matching schema
+    """
+    data = {
+        'id':'some long id',
+        'title':'some cool title',
+        'amount':'some cool amount',
+        'created_at':'Super cool date',
+        'tags':'some cool tags'
+    }
+
+    response = client.put(
+        '/edit-expense/',
         data=json.dumps(
             data
         ),
@@ -122,3 +147,26 @@ def test_create_expense_bad_request(client, data):
 
     assert response.status_code == 400
     assert response.json is not None
+
+@pytest.mark.e2e
+def test_create_list_get(client):
+    requests.post(
+        'http://localhost:5000/create-expense/',
+        json={
+            'title': 'an item',
+            'amount': 'an amount',
+            'created_at': 'date',
+            'tags': 'hello world'
+        },
+    )
+    response = requests.get(
+        'http://localhost:5000/expense-list/',
+    )
+
+    expenses = response.json()
+
+    response = requests.get(
+        f'http://localhost:5000/expense/{expenses[0]["id"]}/',
+    )
+
+    assert response.status_code == 200

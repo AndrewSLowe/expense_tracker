@@ -53,7 +53,23 @@ class Expense(BaseModel):
 
         return expense
 
-    def EditExpense(self, id: str) -> 'Expense':
+    def AddExpense(self) -> 'Expense':
+        """
+        Saves all listed expenses in the DB
+        :param expenses => list:
+        """
+        with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
+            sql = ''' INSERT INTO expenses (id, title, amount, created_at, tags)
+            VALUES(?,?,?,?,?) '''
+            values = (self.id, self.title, self.amount, self.created_at, self.tags)
+
+            cur = conn.cursor()
+            cur.execute(sql, values)
+            conn.commit()
+
+        return self
+
+    def EditExpense(self) -> 'Expense':
         with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
             sql =  ''' 
                     UPDATE expenses 
@@ -64,23 +80,7 @@ class Expense(BaseModel):
                     WHERE id=?
                 '''
                     
-            values = (self.title, self.amount, self.created_at, self.tags, id)
-
-            cur = conn.cursor()
-            cur.execute(sql, values)
-            conn.commit()
-
-        return self
-
-    def AddExpense(self) -> 'Expense':
-        """
-        Saves all listed expenses in the DB
-        :param expenses => list:
-        """
-        with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
-            sql = ''' INSERT INTO expenses (id, title, amount, created_at, tags)
-            VALUES(?,?,?,?,?) '''
-            values = (self.id, self.title, self.amount, self.created_at, self.tags)
+            values = (self.title, self.amount, self.created_at, self.tags, self.id)
 
             cur = conn.cursor()
             cur.execute(sql, values)
