@@ -12,6 +12,9 @@ jsonschema = "*"
 flask = "*"
 pytest-cov = "*"
 requests = "*"
+psycopg2-binary = "*"
+jinja2 = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.9"
