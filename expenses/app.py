@@ -1,5 +1,7 @@
 from flask import Flask, jsonify, request, render_template
 
+from expenses.views import views
+
 from expenses.commands import CreateExpenseCommand, EditExpenseCommand
 from expenses.queries import ListExpensesQuery, GetExpenseByIDQuery
 from expenses.models import Expense
@@ -8,7 +10,7 @@ from pydantic import ValidationError
 def create_app():
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__)
-    
+    views(app)
     # initialize db
     Expense.create_table()
 
@@ -17,18 +19,6 @@ def create_app():
         response = jsonify(error.errors())
         response.status_code = 400
         return response
-
-    @app.route('/')
-    def root():
-        return render_template('public/index.html', title='Home')
-
-    @app.route("/about")
-    def about():
-        return """
-        <h1 style='color: red;'>I'm a red H1 heading!</h1>
-        <p>This is a lovely little paragraph</p>
-        <code>Flask is <em>awesome</em></code>
-        """
 
     @app.route('/create-expense/', methods=['POST'])
     def create_expense():
