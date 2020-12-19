@@ -9,9 +9,33 @@
       <h1>My Expense Tracker App</h1>
       <hr>
       <div class="menu">
-        <a href="/create-expense" class="button warning">Create Expense</a>
-        <a href="/edit-expense" class="button error">Edit Expense</a>   
-        
+        <form action="/create-expense/" method="POST">
+
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" class="form-control" id="title" name="title" placeholder="Select the Title">
+            </div>
+          
+            <div class="form-group">
+              <label>Quantity</label>
+              <input type="Quantity" class="form-control" id="Quantity" name="Quantity" placeholder="Enter the Quantity">
+            </div>
+          
+            <div class="form-group">
+              <label>Date</label>
+              <input type="Date" class="form-control" id="Date" name="Date" placeholder="Create a Date">
+            </div>
+
+            <div class="form-group">
+                <label>Tags</label>
+                <input type="Tags" class="form-control" id="Tags" name="Tags" placeholder="Create the Tags">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Enter Expense</button>
+            {% if feedback %}
+            <p class="text-danger float-right">{{ feedback }}</p>
+            {% endif %}
+          
       </div>
     </div>
   </div>

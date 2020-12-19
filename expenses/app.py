@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, redirect
 
 from expenses.views import views
 
@@ -20,12 +20,31 @@ def create_app():
         response.status_code = 400
         return response
 
-    @app.route('/create-expense/', methods=['POST'])
+    @app.route('/create-expense/', methods=['POST', 'GET'])
     def create_expense():
+        print(request.form['title'])
+
+        if request.method == "POST":
+            req = request.form
+            missing = list()
+
+            for k, v in req.items():
+                if v == "":
+                    missing.append(k)
+
+            if missing:
+                feedback = f"Missing fields for {', '.join(missing)}"
+                return render_template("public/index.html", feedback=feedback)
+            
+            return redirect(request.url)
+
+        # return render_template("public/index.html")
+
         cmd = CreateExpenseCommand(
             **request.json
-        )
-        return jsonify(cmd.execute().dict())
+        ).execute()
+
+        return jsonify(cmd.dict())
 
     @app.route('/edit-expense/', methods=['PUT'])
     def edit_expense():
