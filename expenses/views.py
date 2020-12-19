@@ -6,7 +6,7 @@ from expenses.queries import ListExpensesQuery, GetExpenseByIDQuery
 def views(app):
     @app.route('/')
     def root():
-        return render_template('public/index.html', title='Home')
+        return render_template('public/index.html', title='Create Expense')
 
     @app.route("/about")
     def about():
@@ -23,6 +23,16 @@ def views(app):
     @app.route("/jinja")
     def jinja():
 
-        my_name = 'Andrew'
+        my_name = 'poopy'
+
+        age = 25
+
+        langs = ['python', 'js', 'C']
+
+        friends = {
+            'tom': 20,
+            'sally': 25,
+            'Alice': 16
+        }
 
         return render_template("public/jinja.html", my_name=my_name)

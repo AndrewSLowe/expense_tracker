@@ -1,5 +1,7 @@
 {% extends "public/templates/public_template.html" %}
 
+{% import "macros/input_macros.html" as im %}
+
 {% block title %}Jinja {% endblock %}
 
 {% block main %}
@@ -8,13 +10,15 @@
     <div class="row">
         <div class="col">
             <h1>Jinja template</h1>
-            <hr>
-            
-            <h4>Variable</h4>
-            <hr>
-            <p>{{ my_name }}</p>
+            <form action="#" method="POST">
 
+                {{ im.input(label="Name", id="name", name="name", placeholder="Enter your name") }}
 
+                {{ im.input(label="Email", type="email", id="email", name="email", placeholder="Enter your email") }}
+
+                {{ im.input(label="Password", id="password", name="password", placeholder="Enter your password") }}
+
+            </form>
 
 
         </div>
