@@ -5,6 +5,8 @@ from typing import List
 # pylint: disable=no-name-in-module
 from pydantic import BaseModel, Field
 
+import psycopg2
+
 class NotFound(Exception):
     pass
 
@@ -89,10 +91,14 @@ class Expense(BaseModel):
         return self
 
     @classmethod
-    def create_table(cls, database_name='database.db'):
+    def create_table(cls, database_name='expense_tracker'):
         """Create a table with the database_name statement"""
-
         conn = sqlite3.connect(database_name)
+        # try:
+        #     conn = psycopg2.connect(dbname={database_name}, host='localhost', user='postgres', port=5432)
+        # except:
+        #     print("I am unable to connect to the database")
+
         conn.execute(
             """ CREATE TABLE IF NOT EXISTS expenses (
                     id text,

@@ -3,32 +3,34 @@
 {% block title %}Home{% endblock %}
 
 {% block main %}
+
+
 <div class="container">
   <div class="row">
     <div class="col">
-      <h1>My Expense Tracker App</h1>
+      <h1>My Exense Tracker App</h1>
       <hr>
-      <div class="menu">
+      
         <form action="/create-expense/" method="POST">
 
             <div class="form-group">
-              <label>Title</label>
-              <input type="text" class="form-control" id="title" name="title" placeholder="Select the Title">
+                <label>Title</label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="Enter the title">
             </div>
           
             <div class="form-group">
-              <label>Quantity</label>
-              <input type="Quantity" class="form-control" id="Quantity" name="Quantity" placeholder="Enter the Quantity">
+              <label>Amount</label>
+              <input type="text" class="form-control" id="amount" name="amount" placeholder="Enter the amount">
             </div>
           
             <div class="form-group">
               <label>Date</label>
-              <input type="Date" class="form-control" id="Date" name="Date" placeholder="Create a Date">
+              <input type="text" class="form-control" id="created_at" name="created_at" placeholder="Create a date">
             </div>
 
             <div class="form-group">
                 <label>Tags</label>
-                <input type="Tags" class="form-control" id="Tags" name="Tags" placeholder="Create the Tags">
+                <input type="text" class="form-control" id="tags" name="tags" placeholder="Create the tags">
             </div>
             
             <button type="submit" class="btn btn-primary">Enter Expense</button>

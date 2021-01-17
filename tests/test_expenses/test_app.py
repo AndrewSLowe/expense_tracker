@@ -5,14 +5,14 @@ import requests
 import pytest
 from jsonschema import validate, RefResolver
 
-from expenses import APP
+from expenses.app import app
 from expenses.models import Expense
 
 @pytest.fixture
 def client():
-    APP.config['TESTING'] = True
+    app.config['TESTING'] = True
 
-    with APP.test_client() as client:
+    with app.test_client() as client:
         yield client
 
 def validate_payload(payload, schema_name):
