@@ -23,7 +23,7 @@ class CreateExpenseCommand(BaseModel):
         return expense
 
 class EditExpenseCommand(BaseModel):
-    id: str
+    id: int
     title: str
     amount: str
     created_at: str
@@ -31,18 +31,17 @@ class EditExpenseCommand(BaseModel):
 
     def execute(self) -> Expense:
         expense = Expense(
-            id = self.id,
             title=self.title,
             amount=self.amount,
             created_at=self.created_at,
             tags=self.tags
-        ).EditExpense()
+        ).EditExpense(expense_id=self.id)
 
         return expense
 
 def main():
-    CreateExpenseCommand(title='milk', amount='3', created_at='yesterday', tags='plzwork').execute()
-    EditExpenseCommand(id='833c86b0-dd0e-44ac-85c6-94a454d93be5',title='yoooo', amount='3', created_at='yesterday', tags='plzwork').execute()
+    CreateExpenseCommand(title='milk', amount=1, created_at='yesterday', tags='plzwork').execute()
+    EditExpenseCommand(id=1, title='yoooo', amount=1, created_at='yesterday', tags='plzwork').execute()
 
 if __name__ == "__main__":
     main()

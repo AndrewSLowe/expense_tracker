@@ -9,14 +9,14 @@ def test_list_expenses():
     """
     Expense(
         title='very cool title',
-        amount='very cool amount',
+        amount=1,
         created_at='very cool date',
         tags='very cool tags'
     ).AddExpense()
 
     Expense(
         title='SUPER cool title',
-        amount='SUPER cool amount',
+        amount=2,
         created_at='SUPER cool date',
         tags='SUPER cool tags'
     ).AddExpense()
@@ -33,7 +33,7 @@ def test_get_expense_by_id():
     """
     expense = Expense(
         title='SUPER cool title',
-        amount='SUPER cool amount',
+        amount=3,
         created_at='SUPER cool date',
         tags='SUPER cool tags'
     ).AddExpense()
