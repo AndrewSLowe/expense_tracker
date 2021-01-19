@@ -62,7 +62,7 @@ def test_edit_expense(client):
     THEN it should return Expense in json format matching schema
     """
     data = {
-        'id':'some long id',
+        'id':1,
         'title':'some cool title',
         'amount':'some cool amount',
         'created_at':'Super cool date',
@@ -154,7 +154,7 @@ def test_create_list_get(client):
         'http://localhost:5000/create-expense/',
         json={
             'title': 'an item',
-            'amount': 'an amount',
+            'amount': 14,
             'created_at': 'date',
             'tags': 'hello world'
         },
@@ -162,7 +162,6 @@ def test_create_list_get(client):
     response = requests.get(
         'http://localhost:5000/expense-list/',
     )
-
     expenses = response.json()
 
     response = requests.get(

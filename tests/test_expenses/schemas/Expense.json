@@ -3,9 +3,6 @@
     "title": "Expense",
     "type": "object",
     "properties": {
-        "id": {
-            "type": "string"
-        },
         "title":{
             "type": "string"
         },
@@ -19,5 +16,5 @@
             "type": "string"
         }
     },
-    "required": ["id", "title", "created_at", "amount", "tags"]
+    "required": ["title", "created_at", "amount", "tags"]
 }

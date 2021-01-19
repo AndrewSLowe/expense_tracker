@@ -32,7 +32,7 @@ class Expense(BaseModel):
         return expenses
 
     @classmethod
-    def GetExpenseByID(cls, expense_id: int):
+    def GetExpenseByID(cls, id: int):
         """
         Query expenses by id (unique int)
         :param id:
@@ -42,7 +42,7 @@ class Expense(BaseModel):
         conn.row_factory = sqlite3.Row
     
         cur = conn.cursor()
-        cur.execute("SELECT * FROM expenses WHERE id=?", (expense_id,))
+        cur.execute("SELECT * FROM expenses WHERE id=?", (id,))
 
         record = cur.fetchone()
 
@@ -70,7 +70,7 @@ class Expense(BaseModel):
 
         return self
 
-    def EditExpense(self, expense_id: int) -> 'Expense':
+    def EditExpense(self, id: int) -> 'Expense':
         with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
             sql =  ''' 
                     UPDATE expenses 
@@ -81,7 +81,7 @@ class Expense(BaseModel):
                     WHERE id=?
                 '''
                     
-            values = (self.title, self.amount, self.created_at, self.tags, expense_id)
+            values = (self.title, self.amount, self.created_at, self.tags, id)
 
             cur = conn.cursor()
             cur.execute(sql, values)
@@ -93,10 +93,6 @@ class Expense(BaseModel):
     def create_table(cls, database_name='database.db'):
         """Create a table with the database_name statement"""
         conn = sqlite3.connect(database_name)
-        # try:
-        #     conn = psycopg2.connect(dbname={database_name}, host='localhost', user='postgres', port=5432)
-        # except:
-        #     print("I am unable to connect to the database")
 
         conn.execute(
             """ CREATE TABLE IF NOT EXISTS expenses(
@@ -120,7 +116,7 @@ def main():
     e2.AddExpense()
     e3.AddExpense()
     e4.AddExpense()
-    
+
     Expense(title='yogurt', amount=1, created_at='12/01/20', tags='greek', id=1).EditExpense(1)
 if __name__ == "__main__":
     main()

@@ -38,8 +38,13 @@ def test_get_expense_by_id():
         tags='SUPER cool tags'
     ).AddExpense()
 
+    expense_id = len(ListExpensesQuery().execute())
+
     query = GetExpenseByIDQuery(
-        id=expense.id
+        id=expense_id
     )
 
-    assert query.execute().id == expense.id
+    assert query.execute().title == expense.title
+    assert query.execute().amount == expense.amount
+    assert query.execute().created_at == expense.created_at
+    assert query.execute().tags == expense.tags

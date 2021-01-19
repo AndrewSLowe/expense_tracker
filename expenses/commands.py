@@ -35,7 +35,7 @@ class EditExpenseCommand(BaseModel):
             amount=self.amount,
             created_at=self.created_at,
             tags=self.tags
-        ).EditExpense(expense_id=self.id)
+        ).EditExpense(id=self.id)
 
         return expense
 
