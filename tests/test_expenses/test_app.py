@@ -162,10 +162,10 @@ def test_create_list_get(client):
     response = requests.get(
         'http://localhost:5000/expense-list/',
     )
-    expenses = response.json()
+    expenses_len = len(response.json())
 
     response = requests.get(
-        f'http://localhost:5000/expense/{expenses[0]["id"]}/',
+        f'http://localhost:5000/expense/{expenses_len}/',
     )
 
     assert response.status_code == 200
