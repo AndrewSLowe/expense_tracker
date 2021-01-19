@@ -17,9 +17,9 @@ def test_create_expense():
 
     expense = cmd.execute()
 
-    db_expense = Expense.GetExpenseByID(expense.id)
+    expense_id = len(Expense.ListAll())
+    db_expense = Expense.GetExpenseByID(expense_id)
 
-    assert db_expense.id == expense.id
     assert db_expense.title == expense.title
     assert db_expense.amount == expense.amount
     assert db_expense.created_at == expense.created_at
@@ -31,15 +31,16 @@ def test_edit_expense():
     WHEN the execute method is called
     THEN a new Expense must exist in the database with the same attributes
     """
-    cmd = CreateExpenseCommand(
+    CreateExpenseCommand(
         title='some cool title',
         amount='some cool amount',
         created_at='Super cool date',
         tags='some cool tags'
-    )
-    expense = cmd.execute()
+    ).execute()
+    
+    expense_id = len(Expense.ListAll())
     edit = EditExpenseCommand(
-        id = expense.id,
+        id=expense_id,
         title='some fdsaf title',
         amount='some dsaf amount',
         created_at='Super cofdaol date',
@@ -47,9 +48,8 @@ def test_edit_expense():
     )
     expense_edit = edit.execute()
 
-    db_expense = Expense.GetExpenseByID(expense.id)
+    db_expense = Expense.GetExpenseByID(expense_id)
 
-    assert db_expense.id == expense_edit.id
     assert db_expense.title == expense_edit.title
     assert db_expense.amount == expense_edit.amount
     assert db_expense.created_at == expense_edit.created_at

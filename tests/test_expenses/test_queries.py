@@ -9,14 +9,14 @@ def test_list_expenses():
     """
     Expense(
         title='very cool title',
-        amount='very cool amount',
+        amount=1,
         created_at='very cool date',
         tags='very cool tags'
     ).AddExpense()
 
     Expense(
         title='SUPER cool title',
-        amount='SUPER cool amount',
+        amount=2,
         created_at='SUPER cool date',
         tags='SUPER cool tags'
     ).AddExpense()
@@ -33,13 +33,18 @@ def test_get_expense_by_id():
     """
     expense = Expense(
         title='SUPER cool title',
-        amount='SUPER cool amount',
+        amount=3,
         created_at='SUPER cool date',
         tags='SUPER cool tags'
     ).AddExpense()
 
+    expense_id = len(ListExpensesQuery().execute())
+
     query = GetExpenseByIDQuery(
-        id=expense.id
+        id=expense_id
     )
 
-    assert query.execute().id == expense.id
+    assert query.execute().title == expense.title
+    assert query.execute().amount == expense.amount
+    assert query.execute().created_at == expense.created_at
+    assert query.execute().tags == expense.tags

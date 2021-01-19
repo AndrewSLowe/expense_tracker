@@ -11,7 +11,6 @@ class NotFound(Exception):
     pass
 
 class Expense(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
     amount: str
     created_at: str
@@ -33,7 +32,7 @@ class Expense(BaseModel):
         return expenses
 
     @classmethod
-    def GetExpenseByID(cls, expense_id: str):
+    def GetExpenseByID(cls, id: int):
         """
         Query expenses by id (unique int)
         :param id:
@@ -43,7 +42,7 @@ class Expense(BaseModel):
         conn.row_factory = sqlite3.Row
     
         cur = conn.cursor()
-        cur.execute("SELECT * FROM expenses WHERE id=?", (expense_id,))
+        cur.execute("SELECT * FROM expenses WHERE id=?", (id,))
 
         record = cur.fetchone()
 
@@ -61,9 +60,9 @@ class Expense(BaseModel):
         :param expenses => list:
         """
         with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
-            sql = ''' INSERT INTO expenses (id, title, amount, created_at, tags)
-            VALUES(?,?,?,?,?) '''
-            values = (self.id, self.title, self.amount, self.created_at, self.tags)
+            sql = ''' INSERT INTO expenses (title, amount, created_at, tags)
+            VALUES(?,?,?,?) '''
+            values = (self.title, self.amount, self.created_at, self.tags)
 
             cur = conn.cursor()
             cur.execute(sql, values)
@@ -71,7 +70,7 @@ class Expense(BaseModel):
 
         return self
 
-    def EditExpense(self) -> 'Expense':
+    def EditExpense(self, id: int) -> 'Expense':
         with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
             sql =  ''' 
                     UPDATE expenses 
@@ -82,7 +81,7 @@ class Expense(BaseModel):
                     WHERE id=?
                 '''
                     
-            values = (self.title, self.amount, self.created_at, self.tags, self.id)
+            values = (self.title, self.amount, self.created_at, self.tags, id)
 
             cur = conn.cursor()
             cur.execute(sql, values)
@@ -91,20 +90,16 @@ class Expense(BaseModel):
         return self
 
     @classmethod
-    def create_table(cls, database_name='expense_tracker'):
+    def create_table(cls, database_name='database.db'):
         """Create a table with the database_name statement"""
         conn = sqlite3.connect(database_name)
-        # try:
-        #     conn = psycopg2.connect(dbname={database_name}, host='localhost', user='postgres', port=5432)
-        # except:
-        #     print("I am unable to connect to the database")
 
         conn.execute(
-            """ CREATE TABLE IF NOT EXISTS expenses (
-                    id text,
+            """ CREATE TABLE IF NOT EXISTS expenses(
+                    id INTEGER PRIMARY KEY,
                     title TEXT,
                     amount INT,
-                    created_at TEXT,
+                    created_at DATE,
                     tags TEXT
                 ); """
         )
@@ -112,7 +107,7 @@ class Expense(BaseModel):
 
 def main():
     Expense.create_table()
-    e1 = Expense(id = 'test_id', title='eggs', amount=12, created_at='12/01/20', tags='dairy')
+    e1 = Expense(title='eggs', amount=12, created_at='12/01/20', tags='dairy')
     e2 = Expense(title='milk', amount=1, created_at='12/01/20', tags='groceries')
     e3 = Expense(title='cheese', amount=3, created_at='12/01/20', tags='gouda')
     e4 = Expense(title='yogurt', amount=1, created_at='12/01/20', tags='greek')
@@ -121,7 +116,7 @@ def main():
     e2.AddExpense()
     e3.AddExpense()
     e4.AddExpense()
-    
-    Expense(title='yogurt', amount=1, created_at='12/01/20', tags='greek').EditExpense('e71c5fb5-6be7-49a6-852d-7c3063ecb6a1')
+
+    Expense(title='yogurt', amount=1, created_at='12/01/20', tags='greek', id=1).EditExpense(1)
 if __name__ == "__main__":
     main()
