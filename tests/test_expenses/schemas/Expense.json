@@ -7,7 +7,7 @@
             "type": "string"
         },
         "amount":{
-            "type": "string"
+            "type": "number"
         },
         "created_at":{
             "type": "string"

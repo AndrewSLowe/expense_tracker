@@ -9,10 +9,10 @@ def test_create_expense():
     THEN a new Expense must exist in the database with the same attributes
     """
     cmd = CreateExpenseCommand(
-        title='some cool title',
-        amount='some cool amount',
-        created_at='Super cool date',
-        tags='some cool tags'
+        title='New Expense',
+        amount=12.0,
+        created_at='12/08/1994',
+        tags='dairy'
     )
 
     expense = cmd.execute()
@@ -32,19 +32,19 @@ def test_edit_expense():
     THEN a new Expense must exist in the database with the same attributes
     """
     CreateExpenseCommand(
-        title='some cool title',
-        amount='some cool amount',
-        created_at='Super cool date',
-        tags='some cool tags'
+        title='New Expense',
+        amount=12.0,
+        created_at='12/08/1994',
+        tags='dairy'
     ).execute()
     
     expense_id = len(Expense.ListAll())
     edit = EditExpenseCommand(
         id=expense_id,
-        title='some fdsaf title',
-        amount='some dsaf amount',
-        created_at='Super cofdaol date',
-        tags='some fda tags'
+        title='New Expense',
+        amount=12.0,
+        created_at='12/08/1994',
+        tags='dairy'
     )
     expense_edit = edit.execute()
 

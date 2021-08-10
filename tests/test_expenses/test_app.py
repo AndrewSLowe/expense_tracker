@@ -40,9 +40,9 @@ def test_create_expense(client):
     """
     data = {
         'title':'some cool title',
-        'amount':'some cool amount',
-        'created_at':'Super cool date',
-        'tags':'some cool tags'
+        'amount':12.0,
+        'created_at':'12/08/1994',
+        'tags':'dairy'
     }
 
     response = client.post(
@@ -64,9 +64,9 @@ def test_edit_expense(client):
     data = {
         'id':1,
         'title':'some cool title',
-        'amount':'some cool amount',
-        'created_at':'Super cool date',
-        'tags':'some cool tags'
+        'amount':12.0,
+        'created_at':'12/08/1994',
+        'tags':'dairy'
     }
 
     response = client.put(
@@ -87,10 +87,11 @@ def test_list_expenses(client):
     """
     Expense(
         title='New Expense',
-        amount='cool amount',
-        created_at='neat date',
-        tags='many awesome cool tags'
+        amount=12.0,
+        created_at='12/08/1994',
+        tags='dairy'
     ).AddExpense()
+
     response = client.get(
         '/expense-list/',
         content_type='application/json',
@@ -103,29 +104,29 @@ def test_list_expenses(client):
     [
         {
             'title': 'an item',
-            'amount': 'an amount',
-            'created_at': 'a date',
+            'amount': 12.0,
+            'created_at': '12/08/1994'
         },
         {
             'title': 'an item',
-            'amount': 'an amount',
-        },
-        {
-            'title': 'an item',
-            'amount': None,
-            'created_at': 'a date',
-            'tags': 'some tags'
+            'amount': 12.0
         },
         {
             'title': 'an item',
             'amount': None,
-            'created_at': 'date',
+            'created_at': '12/08/1994',
+            'tags': 'dairy'
+        },
+        {
+            'title': 'an item',
+            'amount': None,
+            'created_at': '12/08/1994',
             'tags': None
         },
         {
             'title': 'an item',
-            'amount': 'an amount',
-            'created_at': 'date',
+            'amount': 12.0,
+            'created_at': '12/08/1994',
             'tags': None
         },
     ]
@@ -153,19 +154,18 @@ def test_create_list_get(client):
     requests.post(
         'http://localhost:5000/create-expense/',
         json={
-            'title': 'an item',
+            'title': 'item',
             'amount': 14,
-            'created_at': 'date',
-            'tags': 'hello world'
+            'created_at': '12/08/1994',
+            'tags': 'some cool tags'
         },
     )
     response = requests.get(
         'http://localhost:5000/expense-list/',
     )
-    expenses_len = len(response.json())
-
+    expenses = len(response.json())
     response = requests.get(
-        f'http://localhost:5000/expense/{expenses_len}/',
+        f'http://localhost:5000/expense/{expenses}/'
     )
 
     assert response.status_code == 200

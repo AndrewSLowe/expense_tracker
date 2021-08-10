@@ -8,17 +8,17 @@ def test_list_expenses():
     THEN it should return 2 expenses
     """
     Expense(
-        title='very cool title',
-        amount=1,
-        created_at='very cool date',
-        tags='very cool tags'
+        title='New Expense',
+        amount=12.0,
+        created_at='12/08/1994',
+        tags='dairy'
     ).AddExpense()
 
     Expense(
-        title='SUPER cool title',
-        amount=2,
-        created_at='SUPER cool date',
-        tags='SUPER cool tags'
+        title='New Expense',
+        amount=12.0,
+        created_at='12/08/1994',
+        tags='dairy'
     ).AddExpense()
 
     query = ListExpensesQuery()
@@ -32,10 +32,10 @@ def test_get_expense_by_id():
     THEN it should return the expense with the same id
     """
     expense = Expense(
-        title='SUPER cool title',
-        amount=3,
-        created_at='SUPER cool date',
-        tags='SUPER cool tags'
+        title='New Expense',
+        amount=12.0,
+        created_at='12/08/1994',
+        tags='dairy'
     ).AddExpense()
 
     expense_id = len(ListExpensesQuery().execute())
