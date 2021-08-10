@@ -8,7 +8,7 @@ class AlreadyExists(Exception):
 
 class CreateExpenseCommand(BaseModel):
     title: str
-    amount: str
+    amount: float
     created_at: str
     tags: str
 
@@ -25,7 +25,7 @@ class CreateExpenseCommand(BaseModel):
 class EditExpenseCommand(BaseModel):
     id: int
     title: str
-    amount: str
+    amount: float
     created_at: str
     tags: str
 

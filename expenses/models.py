@@ -12,7 +12,7 @@ class NotFound(Exception):
 
 class Expense(BaseModel):
     title: str
-    amount: str
+    amount: float
     created_at: str
     tags: str
 
@@ -96,10 +96,10 @@ class Expense(BaseModel):
 
         conn.execute(
             """ CREATE TABLE IF NOT EXISTS expenses(
-                    id INTEGER PRIMARY KEY,
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
                     title TEXT,
-                    amount INT,
-                    created_at DATE,
+                    amount FLOAT,
+                    created_at TEXT,
                     tags TEXT
                 ); """
         )
@@ -107,16 +107,19 @@ class Expense(BaseModel):
 
 def main():
     Expense.create_table()
-    e1 = Expense(title='eggs', amount=12, created_at='12/01/20', tags='dairy')
-    e2 = Expense(title='milk', amount=1, created_at='12/01/20', tags='groceries')
-    e3 = Expense(title='cheese', amount=3, created_at='12/01/20', tags='gouda')
-    e4 = Expense(title='yogurt', amount=1, created_at='12/01/20', tags='greek')
+    e1 = Expense(title='eggs', amount=12, created_at='12/08/1994', tags='dairy')
+    e2 = Expense(title='milk', amount=1, created_at='12/08/1994', tags='dairy')
+    e3 = Expense(title='cheese', amount=3, created_at='12/08/1994', tags='dairy')
+    e4 = Expense(title='yogurt', amount=1, created_at='12/08/1994', tags='dairy')
 
     e1.AddExpense()
     e2.AddExpense()
     e3.AddExpense()
     e4.AddExpense()
 
-    Expense(title='yogurt', amount=1, created_at='12/01/20', tags='greek', id=1).EditExpense(1)
+    Expense(title='yogurt', amount=1, created_at='12/08/1994', tags='greek', id=1).EditExpense(1)
 if __name__ == "__main__":
     main()
+
+
+    # pydantic pytest jsonschema flask pytest-cov requests psycopg2-binary jinja2 gunicorn

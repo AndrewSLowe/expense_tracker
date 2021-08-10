@@ -8,7 +8,6 @@ from pydantic import ValidationError
 """Create and configure an instance of the Flask application."""
 app = Flask(__name__)
 
-
 @app.errorhandler(ValidationError)
 def handle_validation_exception(error):
     response = jsonify(error.errors())
