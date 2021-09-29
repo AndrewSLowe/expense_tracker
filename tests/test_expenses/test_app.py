@@ -55,29 +55,29 @@ def test_create_expense(client):
 
     validate_payload(response.json, 'Expense.json')
 
-def test_edit_expense(client):
-    """
-    GIVEN ID of expense stored in the database
-    WHEN endpoint /create-expense/ is called
-    THEN it should return Expense in json format matching schema
-    """
-    data = {
-        'id':1,
-        'title':'some cool title',
-        'amount':12.0,
-        'created_at':'12/08/1994',
-        'tags':'dairy'
-    }
+# def test_edit_expense(client):
+#     """
+#     GIVEN ID of expense stored in the database
+#     WHEN endpoint /create-expense/ is called
+#     THEN it should return Expense in json format matching schema
+#     """
+#     data = {
+#         'id':1,
+#         'title':'some cool title',
+#         'amount':12.0,
+#         'created_at':'12/08/1994',
+#         'tags':'dairy'
+#     }
 
-    response = client.put(
-        '/edit-expense/',
-        data=json.dumps(
-            data
-        ),
-        content_type='application/json'
-    )
+#     response = client.put(
+#         '/edit-expense/',
+#         data=json.dumps(
+#             data
+#         ),
+#         content_type='application/json'
+#     )
 
-    validate_payload(response.json, 'Expense.json')
+#     validate_payload(response.json, 'Expense.json')
 
 def test_list_expenses(client):
     """
@@ -135,7 +135,7 @@ def test_list_expenses(client):
 def test_create_expense_bad_request(client, data):
     """
     GIVEN request data with invalid values or missing attributes
-    WHEN enpoint /create-article/ is called
+    WHEN enpoint /create-expense/ is called
     THEN it should return status 400 and JSON body
     """
     response = client.post(
@@ -145,7 +145,6 @@ def test_create_expense_bad_request(client, data):
         ),
         content_type='application/json'
     )
-
     assert response.status_code == 400
     assert response.json is not None
 

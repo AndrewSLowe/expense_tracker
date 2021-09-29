@@ -41,10 +41,10 @@ def test_edit_expense():
     expense_id = len(Expense.ListAll())
     edit = EditExpenseCommand(
         id=expense_id,
-        title='New Expense',
-        amount=12.0,
-        created_at='12/08/1994',
-        tags='dairy'
+        title='New Expense edit',
+        amount=24.0,
+        created_at='12/08/1995',
+        tags='dairyyyy'
     )
     expense_edit = edit.execute()
 

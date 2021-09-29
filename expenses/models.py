@@ -17,7 +17,7 @@ class Expense(BaseModel):
     tags: str
 
     @classmethod
-    def ListAll(cls) -> List['Expense']:
+    def ListAll(cls):
         conn = sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db'))
         conn.row_factory = sqlite3.Row
 
@@ -54,7 +54,7 @@ class Expense(BaseModel):
 
         return expense
 
-    def AddExpense(self) -> 'Expense':
+    def AddExpense(self):
         """
         Saves all listed expenses in the DB
         :param expenses => list:
@@ -70,7 +70,7 @@ class Expense(BaseModel):
 
         return self
 
-    def EditExpense(self, id: int) -> 'Expense':
+    def EditExpense(self, id: int):
         with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
             sql =  ''' 
                     UPDATE expenses 
@@ -105,19 +105,83 @@ class Expense(BaseModel):
         )
         conn.close()
 
+    
+
+class Users(BaseModel):
+    name: str
+    email: str
+
+    def AddUser(self):
+        """
+        Saves all listed expenses in the DB
+        :param expenses => list:
+        """
+        with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
+            sql = ''' INSERT INTO users (name, email)
+            VALUES(?,?) '''
+            values = (self.name, self.email)
+
+            cur = conn.cursor()
+            cur.execute(sql, values)
+            conn.commit()
+
+        return self
+
+    @classmethod
+    def FindUserByEmail(cls, email: str):
+        """
+        Query expenses by id (unique int)
+        :param id:
+        :return expenses:
+        """
+        conn = sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db'))
+        conn.row_factory = sqlite3.Row
+    
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE email=?", (email,))
+
+        record = cur.fetchone()
+
+        if record is None:
+            return NotFound
+
+        user = cls(**record)
+        conn.close()
+
+        return user
+
+    @classmethod
+    def create_table(cls, database_name='database.db'):
+        conn = sqlite3.connect(database_name)
+
+        conn.execute(
+            """ CREATE TABLE IF NOT EXISTS users(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT,
+                    email TEXT
+                ); """
+        )
+        conn.close()
+
+
 def main():
-    Expense.create_table()
-    e1 = Expense(title='eggs', amount=12, created_at='12/08/1994', tags='dairy')
-    e2 = Expense(title='milk', amount=1, created_at='12/08/1994', tags='dairy')
-    e3 = Expense(title='cheese', amount=3, created_at='12/08/1994', tags='dairy')
-    e4 = Expense(title='yogurt', amount=1, created_at='12/08/1994', tags='dairy')
+    # Expense.create_table()
+    # e1 = Expense(title='eggs', amount=12, created_at='12/08/1994', tags='dairy')
+    # e2 = Expense(title='milk', amount=1, created_at='12/08/1994', tags='dairy')
+    # e3 = Expense(title='cheese', amount=3, created_at='12/08/1994', tags='dairy')
+    # e4 = Expense(title='yogurt', amount=1, created_at='12/08/1994', tags='dairy')
 
-    e1.AddExpense()
-    e2.AddExpense()
-    e3.AddExpense()
-    e4.AddExpense()
+    # e1.AddExpense()
+    # e2.AddExpense()
+    # e3.AddExpense()
+    # e4.AddExpense()
 
-    Expense(title='yogurt', amount=1, created_at='12/08/1994', tags='greek', id=1).EditExpense(1)
+    # Expense(title='yogurt', amount=1, created_at='12/08/1994', tags='greek', id=1).EditExpense(1)
+
+    Users.create_table()
+    # Users(name="test", email="test@test.com").AddUser()
+    print(Users.FindUserByEmail(email="test@test.com"))
+
 if __name__ == "__main__":
     main()
 
