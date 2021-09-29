@@ -3,7 +3,7 @@ import sqlite3
 import uuid
 from typing import List
 # pylint: disable=no-name-in-module
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
 import psycopg2
 
@@ -11,10 +11,12 @@ class NotFound(Exception):
     pass
 
 class Expense(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
     amount: float
     created_at: str
     tags: str
+    email: EmailStr
 
     @classmethod
     def ListAll(cls):
@@ -90,26 +92,30 @@ class Expense(BaseModel):
         return self
 
     @classmethod
-    def create_table(cls, database_name='database.db'):
+    def create_table(cls):
         """Create a table with the database_name statement"""
-        conn = sqlite3.connect(database_name)
+        
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
+        cur = conn.cursor()
 
-        conn.execute(
+        cur.execute(
             """ CREATE TABLE IF NOT EXISTS expenses(
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id TEXT,
                     title TEXT,
                     amount FLOAT,
                     created_at TEXT,
-                    tags TEXT
+                    tags TEXT,
+                    email TEXT
                 ); """
         )
-        conn.close()
+        cur.close()
+        conn.commit()
 
     
 
 class Users(BaseModel):
     name: str
-    email: str
+    email: EmailStr
 
     def AddUser(self):
         """
@@ -151,18 +157,19 @@ class Users(BaseModel):
         return user
 
     @classmethod
-    def create_table(cls, database_name='database.db'):
-        conn = sqlite3.connect(database_name)
+    def create_table(cls):
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
+        cur = conn.cursor()
 
-        conn.execute(
+        cur.execute(
             """ CREATE TABLE IF NOT EXISTS users(
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id SERIAL PRIMARY KEY,
                     name TEXT,
                     email TEXT
                 ); """
         )
-        conn.close()
-
+        cur.close()
+        conn.commit()
 
 def main():
     # Expense.create_table()

@@ -1,3 +1,4 @@
-if __name__ == '__main__':
-    from models import Expense
-    Expense.create_table()
+from expenses.models import Expense, Users
+
+Expense.create_table()
+Users.create_table()
