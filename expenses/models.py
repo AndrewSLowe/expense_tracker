@@ -5,6 +5,7 @@ from typing import List
 # pylint: disable=no-name-in-module
 from pydantic import BaseModel, EmailStr, Field
 
+from psycopg2.extras import RealDictCursor
 import psycopg2
 
 class NotFound(Exception):
@@ -19,32 +20,31 @@ class Expense(BaseModel):
     email: EmailStr
 
     @classmethod
-    def ListAll(cls):
-        conn = sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db'))
-        conn.row_factory = sqlite3.Row
+    def ListAll(cls, email: str):
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
+        cur = conn.cursor(cursor_factory=RealDictCursor)
 
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM expenses")
+        cur.execute("SELECT * FROM expenses WHERE email=%s", (email,))
 
         records = cur.fetchall()
         expenses = [cls(**record) for record in records] 
 
-        conn.close()
+        cur.close()
+        conn.commit()
 
         return expenses
 
     @classmethod
-    def GetExpenseByID(cls, id: int):
+    def GetExpenseByID(cls, id: str, email: str):
         """
         Query expenses by id (unique int)
         :param id:
         :return expenses:
         """
-        conn = sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db'))
-        conn.row_factory = sqlite3.Row
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
     
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM expenses WHERE id=?", (id,))
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute("SELECT * FROM expenses WHERE id=%s AND email=%s", (id, email))
 
         record = cur.fetchone()
 
@@ -61,32 +61,35 @@ class Expense(BaseModel):
         Saves all listed expenses in the DB
         :param expenses => list:
         """
-        with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
-            sql = ''' INSERT INTO expenses (title, amount, created_at, tags)
-            VALUES(?,?,?,?) '''
-            values = (self.title, self.amount, self.created_at, self.tags)
+        with psycopg2.connect(os.environ.get('DATABASE_URL')) as conn:
+            sql = ''' INSERT INTO expenses (id, title, amount, created_at, tags, email)
+            VALUES(%s, %s, %s, %s, %s, %s) '''
+            values = (self.id, self.title, self.amount, self.created_at, self.tags, self.email)
 
             cur = conn.cursor()
             cur.execute(sql, values)
+            cur.close()
             conn.commit()
 
         return self
 
-    def EditExpense(self, id: int):
-        with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
+    def EditExpense(self, id: str):
+        with psycopg2.connect(os.environ.get('DATABASE_URL')) as conn:
             sql =  ''' 
                     UPDATE expenses 
-                        SET title=?, 
-                        amount=?, 
-                        created_at=?, 
-                        tags=?
-                    WHERE id=?
+                        SET title=%s, 
+                        amount=%s, 
+                        created_at=%s, 
+                        tags=%s
+                    WHERE id=%s
+                        AND email=%s
                 '''
                     
-            values = (self.title, self.amount, self.created_at, self.tags, id)
+            values = (self.title, self.amount, self.created_at, self.tags, id, self.email)
 
             cur = conn.cursor()
             cur.execute(sql, values)
+            cur.close()
             conn.commit()
 
         return self
@@ -122,14 +125,16 @@ class Users(BaseModel):
         Saves all listed expenses in the DB
         :param expenses => list:
         """
-        with sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db')) as conn:
+        with psycopg2.connect(os.environ.get('DATABASE_URL')) as conn:
             sql = ''' INSERT INTO users (name, email)
-            VALUES(?,?) '''
+            VALUES(%s, %s) '''
             values = (self.name, self.email)
 
             cur = conn.cursor()
             cur.execute(sql, values)
+            cur.close()
             conn.commit()
+            
 
         return self
 
@@ -140,11 +145,10 @@ class Users(BaseModel):
         :param id:
         :return expenses:
         """
-        conn = sqlite3.connect(os.getenv('DATABASE_NAME', 'database.db'))
-        conn.row_factory = sqlite3.Row
+        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
     
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM users WHERE email=?", (email,))
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute("SELECT * FROM users WHERE email=%s", (email,))
 
         record = cur.fetchone()
 
@@ -152,6 +156,7 @@ class Users(BaseModel):
             return NotFound
 
         user = cls(**record)
+        cur.close()
         conn.close()
 
         return user

@@ -11,13 +11,15 @@ class CreateExpenseCommand(BaseModel):
     amount: float
     created_at: str
     tags: str
+    email: str
 
     def execute(self) -> Expense:
         expense = Expense(
             title=self.title,
             amount=self.amount,
             created_at=self.created_at,
-            tags=self.tags
+            tags=self.tags,
+            email=self.email
         ).AddExpense()
 
         return expense
@@ -28,13 +30,15 @@ class EditExpenseCommand(BaseModel):
     amount: float
     created_at: str
     tags: str
+    email: str
 
     def execute(self) -> Expense:
         expense = Expense(
             title=self.title,
             amount=self.amount,
             created_at=self.created_at,
-            tags=self.tags
+            tags=self.tags,
+            email=self.email
         ).EditExpense(id=self.id)
 
         return expense
