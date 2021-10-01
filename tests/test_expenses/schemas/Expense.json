@@ -14,7 +14,10 @@
         },
         "tags":{
             "type": "string"
+        },
+        "email":{
+            "type": "string"
         }
     },
-    "required": ["title", "amount", "created_at", "tags"]
+    "required": ["title", "amount", "created_at", "tags", "email"]
 }

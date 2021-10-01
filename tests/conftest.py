@@ -5,13 +5,12 @@ import random
 
 import pytest
 
-from expenses.models import Expense
+from expenses.models import Expense, Users
 
 @pytest.fixture(autouse=True)    # autouse flag set to True: automatically used before and after each test
 def database():
-    file_handle, file_name = tempfile.mkstemp()
-    os.environ['DATABASE_NAME'] = file_name
-    Expense.create_table(database_name=file_name)
+    Expense.drop_table()
+    Expense.create_table()
+    Users.drop_table()
+    Users.create_table()
     yield
-    os.close(file_handle)
-    os.unlink(file_name)

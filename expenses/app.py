@@ -15,7 +15,6 @@ from pydantic import ValidationError
 
 from expenses.models import Users
 
-
 """Create and configure an instance of the Flask application."""
 app = Flask(__name__)
 app.secret_key = "hello"
@@ -85,15 +84,21 @@ def logout():
 
 
 
+
+
+
+
+
+
+
 @app.route('/create-expense/', methods=['POST', 'GET'])
 def create_expense():
-
+    print('hello', request.json)
     cmd = CreateExpenseCommand(
         **request.json
     )
     
     return jsonify(cmd.execute().dict())
-    # return render_template('index.html', content="Testing ")
 
 @app.route('/edit-expense/<expense_id>/', methods=['PUT'])
 def edit_expense(expense_id):
@@ -103,18 +108,15 @@ def edit_expense(expense_id):
     return jsonify(cmd.execute().dict())
 
 @app.route('/expense/<expense_id>/', methods=['GET'])
-def get_expense(expense_id):
+def get_expense(expense_id, email):
     query = GetExpenseByIDQuery(
-        id=expense_id
+        id=expense_id,
+        email=email
     )
     return jsonify(query.execute().dict())
 
 @app.route('/expense-list/', methods=['GET'])
 def list_expenses():
-    query = ListExpensesQuery()
+    query = ListExpensesQuery(**request.json)
     records = [record.dict() for record in query.execute()]
     return jsonify(records)
-
-if __name__ == '__main__':
-    db.create_all()
-    app.run()

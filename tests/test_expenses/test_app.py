@@ -42,7 +42,8 @@ def test_create_expense(client):
         'title':'some cool title',
         'amount':12.0,
         'created_at':'12/08/1994',
-        'tags':'dairy'
+        'tags':'dairy',
+        'email':'4321@gmail.com'
     }
 
     response = client.post(
@@ -89,14 +90,19 @@ def test_list_expenses(client):
         title='New Expense',
         amount=12.0,
         created_at='12/08/1994',
-        tags='dairy'
+        tags='dairy',
+        email='andrew@gmail.com'
     ).AddExpense()
+
+    data = {'email':'andrew@gmail.com'}
 
     response = client.get(
         '/expense-list/',
+        data=json.dumps(
+            data
+        ),
         content_type='application/json',
     )
-
     validate_payload(response.json, 'ExpenseList.json')
 
 @pytest.mark.parametrize(
@@ -150,21 +156,30 @@ def test_create_expense_bad_request(client, data):
 
 @pytest.mark.e2e
 def test_create_list_get(client):
-    requests.post(
-        'http://localhost:5000/create-expense/',
-        json={
+    data = {
             'title': 'item',
             'amount': 14,
             'created_at': '12/08/1994',
-            'tags': 'some cool tags'
-        },
+            'tags': 'some cool tsag',
+            'email': 'fdsagf@gmail.com'
+        }
+        
+    requests.post(
+        'http://localhost:5000/create-expense/',
+        json=data
     )
+
+    data = data['email']
+
     response = requests.get(
         'http://localhost:5000/expense-list/',
+        data=json.dumps(data)
+
     )
-    expenses = len(response.json())
+    
+    expenses = response.json()
     response = requests.get(
-        f'http://localhost:5000/expense/{expenses}/'
+        f'http://localhost:5000/expense/{expenses[0]["id"]}/',
     )
 
     assert response.status_code == 200

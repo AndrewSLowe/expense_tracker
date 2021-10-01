@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import sqlite3
 import uuid
@@ -35,11 +36,11 @@ class Expense(BaseModel):
         return expenses
 
     @classmethod
-    def GetExpenseByID(cls, id: str, email: str):
+    def GetExpenseByID(cls, id: str, email: EmailStr):
         """
-        Query expenses by id (unique int)
+        Query expenses by id (unique uuid)
         :param id:
-        :return expenses:
+        :return expense:
         """
         conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
     
@@ -95,10 +96,10 @@ class Expense(BaseModel):
         return self
 
     @classmethod
-    def create_table(cls):
+    def create_table(cls, database_name=os.environ.get('DATABASE_URL')):
         """Create a table with the database_name statement"""
         
-        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
+        conn = psycopg2.connect(database_name)
         cur = conn.cursor()
 
         cur.execute(
@@ -114,11 +115,25 @@ class Expense(BaseModel):
         cur.close()
         conn.commit()
 
+    @classmethod
+    def drop_table(cls, database_name=os.environ.get('DATABASE_URL')):
+        conn = psycopg2.connect(database_name)
+        cur = conn.cursor()
+
+        cur.execute(
+            """ DELETE FROM expenses; """
+        )
+        cur.close()
+        conn.commit()
+
     
 
 class Users(BaseModel):
     name: str
+    password: str
     email: EmailStr
+    created_at: datetime = None
+    active: bool = True
 
     def AddUser(self):
         """
@@ -126,9 +141,12 @@ class Users(BaseModel):
         :param expenses => list:
         """
         with psycopg2.connect(os.environ.get('DATABASE_URL')) as conn:
-            sql = ''' INSERT INTO users (name, email)
-            VALUES(%s, %s) '''
-            values = (self.name, self.email)
+
+            self.created_at = datetime.now()   #.strftime("%m/%d/%Y, %H:%M:%S")
+
+            sql = ''' INSERT INTO users (name, password, email, created_at, active)
+            VALUES(%s, %s, %s, %s, %s) '''
+            values = (self.name, self.password, self.email, self.created_at, self.active)
 
             cur = conn.cursor()
             cur.execute(sql, values)
@@ -139,11 +157,11 @@ class Users(BaseModel):
         return self
 
     @classmethod
-    def FindUserByEmail(cls, email: str):
+    def GetUserByEmail(cls, email: EmailStr):
         """
-        Query expenses by id (unique int)
+        Query expenses by id (unique uuid)
         :param id:
-        :return expenses:
+        :return expense:
         """
         conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
     
@@ -156,7 +174,6 @@ class Users(BaseModel):
             return NotFound
 
         user = cls(**record)
-        cur.close()
         conn.close()
 
         return user
@@ -168,34 +185,23 @@ class Users(BaseModel):
 
         cur.execute(
             """ CREATE TABLE IF NOT EXISTS users(
-                    id SERIAL PRIMARY KEY,
                     name TEXT,
-                    email TEXT
+                    password TEXT,
+                    email TEXT,
+                    created_at TIMESTAMP,
+                    active BOOL
                 ); """
         )
         cur.close()
         conn.commit()
 
-def main():
-    # Expense.create_table()
-    # e1 = Expense(title='eggs', amount=12, created_at='12/08/1994', tags='dairy')
-    # e2 = Expense(title='milk', amount=1, created_at='12/08/1994', tags='dairy')
-    # e3 = Expense(title='cheese', amount=3, created_at='12/08/1994', tags='dairy')
-    # e4 = Expense(title='yogurt', amount=1, created_at='12/08/1994', tags='dairy')
+    @classmethod
+    def drop_table(cls, database_name=os.environ.get('DATABASE_URL')):
+        conn = psycopg2.connect(database_name)
+        cur = conn.cursor()
 
-    # e1.AddExpense()
-    # e2.AddExpense()
-    # e3.AddExpense()
-    # e4.AddExpense()
-
-    # Expense(title='yogurt', amount=1, created_at='12/08/1994', tags='greek', id=1).EditExpense(1)
-
-    Users.create_table()
-    # Users(name="test", email="test@test.com").AddUser()
-    print(Users.FindUserByEmail(email="test@test.com"))
-
-if __name__ == "__main__":
-    main()
-
-
-    # pydantic pytest jsonschema flask pytest-cov requests psycopg2-binary jinja2 gunicorn
+        cur.execute(
+            """ DELETE FROM users; """
+        )
+        cur.close()
+        conn.commit()
