@@ -1,4 +1,5 @@
 from expenses.models import Expense, Users
 
-Expense.create_table()
-Users.create_table()
+if __name__=="__main__":
+    Expense.create_table()
+    Users.create_table()

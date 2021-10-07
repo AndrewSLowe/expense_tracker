@@ -13,7 +13,6 @@ services:
     environment:
       - FLASK_APP=expenses/app.py
       - FLASK_ENV=development
-      - APP_SETTINGS=config.DevelopmentConfig
       - DATABASE_URL=postgresql://postgres:postgres@api-db:5432/api_dev
       - DATABASE_TEST_URL=postgresql://postgres:postgres@api-db:5432/api_test
     depends_on:

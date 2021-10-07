@@ -27,12 +27,3 @@ class GetUserByEmailQuery(BaseModel):
         user = Users.GetUserByEmail(self.email)
 
         return user
-
-def main():
-    print(ListExpensesQuery().execute())
-    print('==================')
-    print(GetExpenseByIDQuery(id=1).execute())
-    print(GetExpenseByIDQuery(id=16).execute())
-
-if __name__ == "__main__":
-    main()

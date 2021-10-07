@@ -9,6 +9,8 @@ from pydantic import BaseModel, EmailStr, Field
 from psycopg2.extras import RealDictCursor
 import psycopg2
 
+DEFAULT_DB = os.getenv('DATABASE_URL')
+
 class NotFound(Exception):
     pass
 
@@ -22,7 +24,7 @@ class Expense(BaseModel):
 
     @classmethod
     def ListAll(cls, email: str):
-        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
+        conn = psycopg2.connect(os.getenv('DATABASE_NAME', DEFAULT_DB))
         cur = conn.cursor(cursor_factory=RealDictCursor)
 
         cur.execute("SELECT * FROM expenses WHERE email=%s", (email,))
@@ -42,7 +44,7 @@ class Expense(BaseModel):
         :param id:
         :return expense:
         """
-        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
+        conn = psycopg2.connect(os.getenv('DATABASE_NAME', DEFAULT_DB))
     
         cur = conn.cursor(cursor_factory=RealDictCursor)
         cur.execute("SELECT * FROM expenses WHERE id=%s AND email=%s", (id, email))
@@ -62,7 +64,7 @@ class Expense(BaseModel):
         Saves all listed expenses in the DB
         :param expenses => list:
         """
-        with psycopg2.connect(os.environ.get('DATABASE_URL')) as conn:
+        with psycopg2.connect(os.getenv('DATABASE_NAME', DEFAULT_DB)) as conn:
             sql = ''' INSERT INTO expenses (id, title, amount, created_at, tags, email)
             VALUES(%s, %s, %s, %s, %s, %s) '''
             values = (self.id, self.title, self.amount, self.created_at, self.tags, self.email)
@@ -75,7 +77,7 @@ class Expense(BaseModel):
         return self
 
     def EditExpense(self, id: str):
-        with psycopg2.connect(os.environ.get('DATABASE_URL')) as conn:
+        with psycopg2.connect(os.getenv('DATABASE_NAME', DEFAULT_DB)) as conn:
             sql =  ''' 
                     UPDATE expenses 
                         SET title=%s, 
@@ -96,7 +98,7 @@ class Expense(BaseModel):
         return self
 
     @classmethod
-    def create_table(cls, database_name=os.environ.get('DATABASE_URL')):
+    def create_table(cls, database_name=os.getenv('DATABASE_URL')):
         """Create a table with the database_name statement"""
         
         conn = psycopg2.connect(database_name)
@@ -116,12 +118,12 @@ class Expense(BaseModel):
         conn.commit()
 
     @classmethod
-    def drop_table(cls, database_name=os.environ.get('DATABASE_URL')):
+    def drop_table(cls, database_name=os.getenv('DATABASE_URL')):
         conn = psycopg2.connect(database_name)
         cur = conn.cursor()
 
         cur.execute(
-            """ DELETE FROM expenses; """
+            """ TRUNCATE TABLE expenses CASCADE; """
         )
         cur.close()
         conn.commit()
@@ -140,7 +142,7 @@ class Users(BaseModel):
         Saves all listed expenses in the DB
         :param expenses => list:
         """
-        with psycopg2.connect(os.environ.get('DATABASE_URL')) as conn:
+        with psycopg2.connect(os.getenv('DATABASE_NAME', DEFAULT_DB)) as conn:
 
             self.created_at = datetime.now()   #.strftime("%m/%d/%Y, %H:%M:%S")
 
@@ -163,7 +165,7 @@ class Users(BaseModel):
         :param id:
         :return expense:
         """
-        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
+        conn = psycopg2.connect(os.getenv('DATABASE_NAME', DEFAULT_DB))
     
         cur = conn.cursor(cursor_factory=RealDictCursor)
         cur.execute("SELECT * FROM users WHERE email=%s", (email,))
@@ -179,8 +181,8 @@ class Users(BaseModel):
         return user
 
     @classmethod
-    def create_table(cls):
-        conn = psycopg2.connect(os.environ.get('DATABASE_URL'))
+    def create_table(cls, database_name=os.getenv('DATABASE_URL')):
+        conn = psycopg2.connect(database_name)
         cur = conn.cursor()
 
         cur.execute(
@@ -196,12 +198,11 @@ class Users(BaseModel):
         conn.commit()
 
     @classmethod
-    def drop_table(cls, database_name=os.environ.get('DATABASE_URL')):
+    def drop_table(cls, database_name=os.getenv('DATABASE_URL')):
         conn = psycopg2.connect(database_name)
         cur = conn.cursor()
-
         cur.execute(
-            """ DELETE FROM users; """
+            """ TRUNCATE TABLE users CASCADE; """
         )
         cur.close()
         conn.commit()

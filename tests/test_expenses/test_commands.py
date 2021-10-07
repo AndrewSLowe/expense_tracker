@@ -1,6 +1,3 @@
-from pydantic import EmailStr, Field
-
-import pytest
 from expenses.models import Expense, Users
 from expenses.commands import CreateExpenseCommand, EditExpenseCommand, CreateNewUser
 
@@ -74,7 +71,6 @@ def test_create_user():
     )
     
     user = cmd.execute()
-    print(user.email)
     db_user = Users.GetUserByEmail(user.email)
 
     assert db_user.name == user.name

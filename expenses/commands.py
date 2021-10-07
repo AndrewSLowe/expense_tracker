@@ -60,11 +60,3 @@ class CreateNewUser(BaseModel):
         ).AddUser()
 
         return user
-
-
-def main():
-    CreateExpenseCommand(title='milk', amount=1, created_at='yesterday', tags='plzwork').execute()
-    EditExpenseCommand(id=1, title='yoooo', amount=1, created_at='yesterday', tags='plzwork').execute()
-
-if __name__ == "__main__":
-    main()

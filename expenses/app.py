@@ -6,23 +6,23 @@ import os
 from flask import Flask, jsonify, request, render_template, redirect, session, url_for, flash
 from werkzeug.datastructures import ContentRange
 
-from expenses.commands import CreateExpenseCommand, EditExpenseCommand
-from expenses.queries import ListExpensesQuery, GetExpenseByIDQuery
+from expenses.commands import CreateExpenseCommand, EditExpenseCommand, CreateNewUser
+from expenses.queries import ListExpensesQuery, GetExpenseByIDQuery, GetUserByEmailQuery
 
 from flask_sqlalchemy import SQLAlchemy
 
 from pydantic import ValidationError
 
-from expenses.models import Users
+from expenses.models import NotFound, Users
 
 """Create and configure an instance of the Flask application."""
 app = Flask(__name__)
 app.secret_key = "hello"
 app.permanent_session_lifetime = timedelta(minutes=5)
 
-# set config
-app_settings = os.getenv('APP_SETTINGS')  # new
-app.config.from_object(app_settings) 
+# # set config
+# app_settings = os.getenv('APP_SETTINGS')  # new
+# app.config.from_object(app_settings) 
 
 @app.errorhandler(ValidationError)
 def handle_validation_exception(error):
@@ -34,24 +34,40 @@ def handle_validation_exception(error):
 def login():
     if request.method == "POST":
         session.permanent = True
-        user = request.form["nm"]
-        session["user"] = user
+        user = request.form["email"]
+        session["email"] = user
         
-        found_user = users.query.filter_by(name=user).first()
-        if found_user:
-            session["email"] = found_user.email
-            
-        else:
-            usr = Users(user, "")
-            usr.AddUser()
-        flash("Login successful!")
+        found_user = GetUserByEmailQuery(email=user).execute()
+
+        if found_user is NotFound:
+            return redirect(url_for("registration"))
         return redirect(url_for("user"))
+       
+        
     else:
         if "user" in session:
             flash("Already Logged in!")
             return redirect(url_for("user"))
         
         return render_template("login.html")
+
+@app.route("/registration", methods=["POST", "GET"])
+def registration():
+    if request.method == "POST":
+        email = request.form['email']
+        check_email_registered = GetUserByEmailQuery(email=email).execute()
+        if check_email_registered is NotFound:
+            CreateNewUser(name=request.form['name'],
+                            email=request.form['email'],
+                            password=request.form['password'],
+            ).execute()
+            return redirect(url_for("login"))
+        else:
+            flash('That email already exists!')
+            return render_template("registration.html")
+    else:
+        return render_template("registration.html")
+
 
 @app.route("/user", methods=["POST", "GET"])
 def user():
