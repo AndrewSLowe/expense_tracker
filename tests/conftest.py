@@ -10,6 +10,6 @@ def clear_tables():
     test_db = os.environ.get('DATABASE_TEST_URL')
     os.environ['DATABASE_NAME'] = test_db
     yield
-    Expense.drop_table(database_name=test_db)
-    Users.drop_table(database_name=test_db)
+    Expense.clear_table(database_name=test_db)
+    Users.clear_table(database_name=test_db)
     os.environ.pop('DATABASE_NAME', None)

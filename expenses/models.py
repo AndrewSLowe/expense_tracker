@@ -24,6 +24,11 @@ class Expense(BaseModel):
 
     @classmethod
     def ListAll(cls, email: str):
+        """
+        Query expenses by email
+        :param email:
+        :return expenses:
+        """
         conn = psycopg2.connect(os.getenv('DATABASE_NAME', DEFAULT_DB))
         cur = conn.cursor(cursor_factory=RealDictCursor)
 
@@ -40,7 +45,7 @@ class Expense(BaseModel):
     @classmethod
     def GetExpenseByID(cls, id: str, email: EmailStr):
         """
-        Query expenses by id (unique uuid)
+        Query expense by id (unique uuid)
         :param id:
         :return expense:
         """
@@ -77,6 +82,10 @@ class Expense(BaseModel):
         return self
 
     def EditExpense(self, id: str):
+        """
+        Edits unique expense by expense id
+        :param id => user:
+        """
         with psycopg2.connect(os.getenv('DATABASE_NAME', DEFAULT_DB)) as conn:
             sql =  ''' 
                     UPDATE expenses 
@@ -99,7 +108,7 @@ class Expense(BaseModel):
 
     @classmethod
     def create_table(cls, database_name=os.getenv('DATABASE_URL')):
-        """Create a table with the database_name statement"""
+        """Create an expenses table with the database_name statement"""
         
         conn = psycopg2.connect(database_name)
         cur = conn.cursor()
@@ -118,7 +127,9 @@ class Expense(BaseModel):
         conn.commit()
 
     @classmethod
-    def drop_table(cls, database_name=os.getenv('DATABASE_URL')):
+    def clear_table(cls, database_name=os.getenv('DATABASE_URL')):
+        """Clears all data in the expenses table. Used for testing."""
+
         conn = psycopg2.connect(database_name)
         cur = conn.cursor()
 
@@ -139,8 +150,8 @@ class Users(BaseModel):
 
     def AddUser(self):
         """
-        Saves all listed expenses in the DB
-        :param expenses => list:
+        Saves all listed users in the DB
+        :param user => list:
         """
         with psycopg2.connect(os.getenv('DATABASE_NAME', DEFAULT_DB)) as conn:
 
@@ -161,9 +172,9 @@ class Users(BaseModel):
     @classmethod
     def GetUserByEmail(cls, email: EmailStr):
         """
-        Query expenses by id (unique uuid)
-        :param id:
-        :return expense:
+        Query users by email (unique email)
+        :param email:
+        :return user:
         """
         conn = psycopg2.connect(os.getenv('DATABASE_NAME', DEFAULT_DB))
     
@@ -182,6 +193,8 @@ class Users(BaseModel):
 
     @classmethod
     def create_table(cls, database_name=os.getenv('DATABASE_URL')):
+        """Create an users table with the database_name statement"""
+
         conn = psycopg2.connect(database_name)
         cur = conn.cursor()
 
@@ -198,7 +211,9 @@ class Users(BaseModel):
         conn.commit()
 
     @classmethod
-    def drop_table(cls, database_name=os.getenv('DATABASE_URL')):
+    def clear_table(cls, database_name=os.getenv('DATABASE_URL')):
+        """Clears all data in users table. Used for testing."""
+        
         conn = psycopg2.connect(database_name)
         cur = conn.cursor()
         cur.execute(
